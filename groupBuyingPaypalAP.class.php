@@ -747,7 +747,11 @@ class Group_Buying_Paypal_AP_Beta extends Group_Buying_Offsite_Processors {
 	}
 
 	public function set_secondary_share( $post_id, $secondary_share, Group_Buying_Deal $deal ) {
-		if ( $deal->get_price() < $secondary_share ) {
+		$is_percentage = self::is_share_percentage( $post_id );
+		if ( $is_percentage && $secondary_share > 50 ) {
+			$secondary_share = 50;
+		}
+		elseif ( !$is_percentage && $deal->get_price() < $secondary_share ) {
 			$secondary_share = $deal->get_price();
 		}
 		update_post_meta( $post_id, self::$meta_keys['secondary_share'], $secondary_share );
