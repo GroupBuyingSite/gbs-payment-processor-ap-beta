@@ -5,7 +5,7 @@
  * @package GBS
  * @subpackage Payment Processing_Processor
  */
-class Group_Buying_Paypal_AP extends Group_Buying_Offsite_Processors {
+class Group_Buying_Paypal_AP_Beta extends Group_Buying_Offsite_Processors {
 	// Endpoints
 	const API_ENDPOINT_SANDBOX = 'https://svcs.sandbox.paypal.com/AdaptivePayments';
 	const API_ENDPOINT_LIVE = 'https://svcs.paypal.com/AdaptivePayments';
@@ -96,7 +96,7 @@ class Group_Buying_Paypal_AP extends Group_Buying_Offsite_Processors {
 	 *
 	 */
 	public static function register() {
-		self::add_payment_processor( __CLASS__, self::__( 'PayPal Adaptive Payments (beta)' ) );
+		self::add_payment_processor( __CLASS__, self::__( 'PayPal Adaptive Payments (beta 2)' ) );
 	}
 
 	public static function returned_from_offsite() {
@@ -770,4 +770,4 @@ class Group_Buying_Paypal_AP extends Group_Buying_Offsite_Processors {
 			</div>';
 	}
 }
-Group_Buying_Paypal_AP::register();
+Group_Buying_Paypal_AP_Beta::register();

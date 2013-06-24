@@ -12,12 +12,13 @@ Text Domain: group-buying
 Domain Path: /lang
 */
 
-if ( !version_compare( Group_Buying::GB_VERSION, '4.5', '<=' ) ) {
-	echo '<div class="error"><p><strong>Group Buying Addon - Adaptive Payments Beta</strong> no longer supported.</p></div>';
-}
-else {
-	add_action('gb_register_processors', 'gb_load_ap');
-	function gb_load_ap() {
+
+add_action('gb_register_processors', 'gb_load_ap');
+function gb_load_ap() {
+	if ( !version_compare( Group_Buying::GB_VERSION, '4.5', '<=' ) ) {
+		echo '<div class="error"><p><strong>Group Buying Addon - Adaptive Payments Beta</strong> no longer supported.</p></div>';
+	}
+	else {
 		require_once('groupBuyingPaypalAP.class.php');
 	}
 }
