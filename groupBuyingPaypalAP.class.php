@@ -361,7 +361,10 @@ class Group_Buying_Paypal_AP_Beta extends Group_Buying_Offsite_Processors {
 	 * @return void
 	 */
 	public function capture_pending_payments() {
-		$payments = Group_Buying_Payment::get_pending_payments();
+		// Filter the post query so that it returns only payments in the last 90 days
+		add_filter( 'posts_where', array( __CLASS__, 'filter_where' ) );
+		$payments = Group_Buying_Payment::get_pending_payments( self::get_payment_method(), FALSE );
+		remove_filter( 'posts_where', array( __CLASS__, 'filter_where' ) );
 		foreach ( $payments as $payment_id ) {
 			$payment = Group_Buying_Payment::get_instance( $payment_id );
 			$this->capture_payment( $payment );
@@ -419,10 +422,12 @@ class Group_Buying_Paypal_AP_Beta extends Group_Buying_Offsite_Processors {
 								unset( $data['uncaptured_deals'][$deal_id] );
 							}
 						}
+
 						$response['tracking_id_var'] = $tracking_id;
 						// set new response
 						$data['capture_response'][] = $response;
 					}
+
 					if ( $payment_captured ) {
 						$payment->set_data( $data );
 						do_action( 'payment_captured', $payment, array_keys( $items_to_capture ) );
@@ -772,6 +777,13 @@ class Group_Buying_Paypal_AP_Beta extends Group_Buying_Offsite_Processors {
 				<input type="hidden" name="" value="'.self::CHECKOUT_ACTION.'">
 				<input class="form-submit submit checkout_next_step" type="submit" value="'.self::__( 'Paypal' ).'" name="gb_checkout_button" />
 			</div>';
+	}
+
+
+	public function filter_where( $where = '' ) {
+		// posts 90 days old
+		$where .= " AND post_date >= '" . date('Y-m-d', current_time('timestamp')-7776000 ) . "'";
+		return $where;
 	}
 }
 Group_Buying_Paypal_AP_Beta::register();
