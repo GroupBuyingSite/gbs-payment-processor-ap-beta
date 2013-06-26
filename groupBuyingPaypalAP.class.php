@@ -801,7 +801,7 @@ class Group_Buying_Paypal_AP_Beta extends Group_Buying_Offsite_Processors {
 
 	public function filter_where( $where = '' ) {
 		// posts 90 days old
-		$where .= " AND post_date >= '" . date('Y-m-d', apply_filters( 'gb_paypal_ap_endingdate_for_preapproval', current_time('timestamp')+7776000) ) . "'";
+		$where .= " AND post_date >= '" . date('Y-m-d', apply_filters( 'gb_paypal_ap_endingdate_for_preapproval', current_time('timestamp')-7776000) ) . "'";
 		return $where;
 	}
 }
