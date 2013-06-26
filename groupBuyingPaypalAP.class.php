@@ -192,6 +192,13 @@ class Group_Buying_Paypal_AP_Beta extends Group_Buying_Offsite_Processors {
 		}
 	}
 
+	/**
+	 * Build the Pre Approval array then post it to PP API.
+	 * https://www.paypalobjects.com/webstatic/en_US/developer/docs/pdf/pp_adaptivepayments.pdf p165
+	 *
+	 * @param  Group_Buying_Checkouts $checkout
+	 * @return
+	 */
 	public static function get_preapproval( Group_Buying_Checkouts $checkout ) {
 		$cart = $checkout->get_cart();
 
@@ -376,7 +383,7 @@ class Group_Buying_Paypal_AP_Beta extends Group_Buying_Offsite_Processors {
 		add_filter( 'posts_where', array( __CLASS__, 'filter_where' ) );
 		$payments = Group_Buying_Payment::get_pending_payments( self::get_payment_method(), FALSE );
 		remove_filter( 'posts_where', array( __CLASS__, 'filter_where' ) );
-		error_log( 'payments' . print_r( $payments, TRUE ) );
+
 		foreach ( $payments as $payment_id ) {
 			$payment = Group_Buying_Payment::get_instance( $payment_id );
 			$this->capture_payment( $payment );
@@ -534,7 +541,7 @@ class Group_Buying_Paypal_AP_Beta extends Group_Buying_Offsite_Processors {
 	 * @param array   $post_array  body/post
 	 * @return array
 	 */
-	private function remote_post( $method_name = "Preapproval", $post_array = array() ) {
+	private function remote_post( $method_name = 'Preapproval', $post_array = array() ) {
 		$url = self::get_api_url().'/'.$method_name;
 		$post_string = self::make_nvp( $post_array );
 		$response = wp_remote_post( $url, array(
