@@ -212,6 +212,17 @@ class Group_Buying_Paypal_AP_Beta extends Group_Buying_Offsite_Processors {
 		$fields['returnUrl'] = self::$return_url;
 		$fields['ipnNotificationUrl'] = Group_Buying_Offsite_Processor_Handler::get_url();
 		$fields['clientDetails'] = get_current_user_id();
+		// added in 4.5
+		$fields['displayMaxTotalAmount'] = TRUE;
+		$fields['requireInstantFundingSource'] = TRUE;
+
+		// Build an array of the product titles so they can be comma seperated below.
+		$item_array = array();
+		foreach ( $cart->get_products() as $item ) {
+			$item_array[] = get_the_title( $item['deal_id'] );
+		}
+		// memo
+		$fields['memo'] = self::__('Item(s) your Pre-Approving Payment: ') . implode( ', ', $item_array );
 
 		$response = self::remote_post( 'Preapproval', $fields );
 
