@@ -211,7 +211,7 @@ class Group_Buying_Paypal_AP_Beta extends Group_Buying_Offsite_Processors {
 		$fields = array();
 		$fields['requestEnvelope.errorLanguage'] = apply_filters( 'gb_paypal_ap_errorlanuage', 'en_US' );
 		$fields['requestEnvelope.detailLevel'] = 'ReturnAll';
-		$fields['endingDate'] = date( 'c', apply_filters( 'gb_paypal_ap_endingdate_for_preapproval', current_time('timestamp')+7776000) );
+		$fields['endingDate'] = date( 'c', current_time('timestamp')+apply_filters( 'gb_paypal_ap_endingperiod_for_preapproval', 7776000 ) );
 		$fields['startingDate'] = date( 'c' );
 		$fields['maxTotalAmountOfAllPayments'] = gb_get_number_format( $filtered_total );
 		$fields['currencyCode'] = self::get_currency_code();
@@ -801,7 +801,7 @@ class Group_Buying_Paypal_AP_Beta extends Group_Buying_Offsite_Processors {
 
 	public function filter_where( $where = '' ) {
 		// posts 90 days old
-		$where .= " AND post_date >= '" . date('Y-m-d', apply_filters( 'gb_paypal_ap_endingdate_for_preapproval', current_time('timestamp')-7776000) ) . "'";
+		$where .= " AND post_date >= '" . date('Y-m-d', current_time('timestamp')-apply_filters( 'gb_paypal_ap_endingperiod_for_preapproval', 7776000 ) ) . "'";
 		return $where;
 	}
 }
