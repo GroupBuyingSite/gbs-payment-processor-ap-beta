@@ -204,7 +204,7 @@ class Group_Buying_Paypal_AP_Beta extends Group_Buying_Offsite_Processors {
 		$fields = array();
 		$fields['requestEnvelope.errorLanguage'] = apply_filters( 'gb_paypal_ap_errorlanuage', 'en_US' );
 		$fields['requestEnvelope.detailLevel'] = 'ReturnAll';
-		$fields['endingDate'] = date( 'c', apply_filters( 'gb_paypal_ap_endingdate_for_preapproval', time()+5184000 ) );
+		$fields['endingDate'] = date( 'c', apply_filters( 'gb_paypal_ap_endingdate_for_preapproval', current_time('timestamp')+7776000) );
 		$fields['startingDate'] = date( 'c' );
 		$fields['maxTotalAmountOfAllPayments'] = gb_get_number_format( $filtered_total );
 		$fields['currencyCode'] = self::get_currency_code();
@@ -365,6 +365,7 @@ class Group_Buying_Paypal_AP_Beta extends Group_Buying_Offsite_Processors {
 		add_filter( 'posts_where', array( __CLASS__, 'filter_where' ) );
 		$payments = Group_Buying_Payment::get_pending_payments( self::get_payment_method(), FALSE );
 		remove_filter( 'posts_where', array( __CLASS__, 'filter_where' ) );
+		error_log( 'payments' . print_r( $payments, TRUE ) );
 		foreach ( $payments as $payment_id ) {
 			$payment = Group_Buying_Payment::get_instance( $payment_id );
 			$this->capture_payment( $payment );
@@ -782,7 +783,7 @@ class Group_Buying_Paypal_AP_Beta extends Group_Buying_Offsite_Processors {
 
 	public function filter_where( $where = '' ) {
 		// posts 90 days old
-		$where .= " AND post_date >= '" . date('Y-m-d', current_time('timestamp')-7776000 ) . "'";
+		$where .= " AND post_date >= '" . date('Y-m-d', apply_filters( 'gb_paypal_ap_endingdate_for_preapproval', current_time('timestamp')+7776000) ) . "'";
 		return $where;
 	}
 }
